@@ -6,20 +6,21 @@ TOKEN = os.getenv("8712672793:AAEqJg5tPNX6lw8-AzqDU5ej1s-hB_z_qGU")
 CHAT_ID = os.getenv("681440652")
 
 with open("ricerche.json", "r", encoding="utf-8") as f:
-    ricerche = json.load(f)
+    searches = json.load(f)
 
 msg = f"""
-🏠 IMMOBILI SCOUT AVVIATO
+🏠 IMMOBILI SCOUT
 
-Ricerche caricate:
-{len(ricerche)}
+✅ GitHub attivo
 
-✅ Telegram OK
-✅ GitHub OK
-✅ Config OK
+✅ Telegram attivo
 
-Prossimo step:
-Playwright
+✅ Configurazione corretta
+
+📊 Ricerche caricate:
+{len(searches)}
+
+🚀 Pronto per Playwright
 """
 
 requests.post(
@@ -30,4 +31,4 @@ requests.post(
     }
 )
 
-print("ok")
+print("MESSAGGIO INVIATO")
