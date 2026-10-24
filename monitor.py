@@ -1,19 +1,67 @@
-import os
+import json
 import requests
+from bs4 import BeautifulSoup
+
+with open("ricerche.json", "r", encoding="utf-8") as f:
+    ricerche = json.load(f)
+
+ricerca = ricerche[0]
+
+url = ricerca["url"]
+
+headers = {
+    "User-Agent": "Mozilla/5.0"
+}
+
+r = requests.get(
+    url,
+    headers=headers,
+    timeout=30
+)
+
+print("STATUS:", r.status_code)
+
+soup = BeautifulSoup(r.text, "html.parser")
+
+links = set()
+
+for a in soup.find_all("a", href=True):
+
+    href = a["href"]
+
+    if "/annunci/" in href:
+        links.add(href)
 
 token = os.getenv("8712672793:AAEqJg5tPNX6lw8-AzqDU5ej1s-hB_z_qGU")
 chat_id = os.getenv("681440652")
 
-print("TOKEN PRESENTE:", bool(token))
-print("CHAT ID PRESENTE:", bool(chat_id))
+msg = f"""
+🏠 IMMOBILI SCOUT
 
-r = requests.post(
+STATUS:
+{r.status_code}
+
+HTML:
+{len(r.text)}
+
+LINK ANNUNCI TROVATI:
+{len(links)}
+"""
+
+requests.post(
     f"https://api.telegram.org/bot{token}/sendMessage",
     json={
         "chat_id": chat_id,
-        "text": "🚀 TEST DEFINITIVO IMMOBILI SCOUT"
+        "text": msg
     }
 )
 
-print("STATUS:", r.status_code)
-print(r.text)
+for link in list(links)[:10]:
+
+    requests.post(
+        f"https://api.telegram.org/bot{token}/sendMessage",
+        json={
+            "chat_id": chat_id,
+            "text": link
+        }
+    )
